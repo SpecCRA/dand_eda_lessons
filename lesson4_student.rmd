@@ -284,7 +284,7 @@ ggplot(aes(Mitchell$Month, Mitchell$Temp), data=Mitchell) +
 ```
 
 ***
-
+asdf
 ### A New Perspective
 
 What do you notice?
