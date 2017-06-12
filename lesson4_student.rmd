@@ -1,0 +1,325 @@
+Lesson 4
+========================================================
+```{r Things to run at the start of every session}
+library(dplyr)
+library(ggplot2)
+
+```
+
+***
+
+### Scatterplots and Perceived Audience Size
+Notes:
+
+***
+
+### Scatterplots
+Notes:
+
+```{r Scatterplots}
+#qplot(x=age, y=friend_count, data = pf)
+#qplot(age,friend_count, data=pf)
+
+ggplot(aes(x=age, y=friend_count), data=pf) + geom_point()
+```
+
+***
+
+#### What are some things that you notice right away?
+Response:
+
+***
+
+### ggplot Syntax
+Notes:
+Add one layer at a time when building plots for debugging purposes
+
+```{r ggplot Syntax}
+ggplot(aes(x=age, y=friend_count), data=pf) + geom_point() + 
+  xlim(13,90)
+
+summary(pf$age)
+```
+
+***
+
+### Overplotting
+Notes:
+Where points are on top of one another, making it hard to determine many things, such as frequency
+
+```{r Overplotting}
+ggplot(aes(x=age, y=friend_count), data=pf) + 
+  geom_jitter(alpha = 1/20) + # alpha makes it so it takes 20 points to be one black dot
+  xlim(13,90) 
+
+```
+
+#### What do you notice in the plot?
+Response:
+
+***
+
+### Coord_trans()
+Notes:
+
+```{r Coord_trans()}
+ggplot(aes(x=age, y=friend_count), data=pf) + 
+  geom_point(alpha = 1/20) + # alpha makes it so it takes 20 points to be one black dot
+  xlim(13,90) +
+  coord_trans(y='sqrt')
+```
+
+#### Look up the documentation for coord_trans() and add a layer to the plot that transforms friend_count using the square root function. Create your plot!
+
+```{r}
+# for geom_jitter
+ggplot(aes(x=age, y=friend_count), data=pf) + 
+  geom_point(alpha = 1/20, position = position_jitter(h=0)) +
+  xlim(13,90) +
+  coord_trans(y='sqrt')
+```
+
+#### What do you notice?
+
+***
+
+### Alpha and Jitter
+Notes:
+
+```{r Alpha and Jitter}
+ggplot(aes(age, friendships_initiated), data=pf) +
+  geom_point(alpha = 1/25,position = position_jitter(h=0)) +
+  xlim(13,90) +
+  coord_trans(y="sqrt")
+```
+
+***
+
+### Overplotting and Domain Knowledge
+Notes:
+Think about the limitations of each data point and how it can be bound in the axes to show people
+***
+
+### Conditional Means
+Notes:
+Sometimes you want to see how the mean or median of a variable varies with another variable.
+Ex. How does the average friend count vary over age?
+
+```{r Conditional Means}
+age_groups <- group_by(pf, age)
+pf.fc_by_age <- summarise(age_groups,
+                          friend_count_mean = mean(friend_count),
+                          friend_count_median = median(friend_count),
+                          n= n())
+
+pf.fc_by_age <- arrange(pf.fc_by_age, age)
+
+head(pf.fc_by_age)
+```
+
+```{r Alternative way to write above code}
+pf.fc_by_age <- pf %>%
+  summarise(friend_count_mean = mean(friend_count),
+            friend_count_median = meadian(friend_count),
+            n= n()) %>%
+  arrange(age)
+
+head(pf.fc_by_age, 20)
+```
+
+
+Create your plot!
+
+```{r Conditional Means Plot}
+ggplot(aes(age, friend_count_mean), data = pf.fc_by_age) + geom_line()
+```
+
+***
+
+### Overlaying Summaries with Raw Data
+Notes:
+
+
+```{r Overlaying Summaries with Raw Data}
+ggplot(aes(x=age, y=friend_count), data=pf) + 
+  geom_point(alpha = 1/20, position = position_jitter(h=0),
+             color = "orange") +
+  geom_line(stat='summary', fun.y=mean) +
+  geom_line(stat="summary", fun.y=quantile, fun.args = (probs = 0.1),
+            linetype= 2, color="blue") +
+  geom_line(stat="summary", fun.y = median, color = "blue") + 
+  geom_line(stat = "summary", fun.y = quantile, fun.args = (probs = 0.9), 
+            linetype= 6, color="blue") +
+  coord_cartesian(xlim=c(13,30), ylim=c(0,1000))
+```
+
+#### What are some of your observations of the plot?
+Response:
+
+***
+
+### Moira: Histogram Summary and Scatterplot
+See the Instructor Notes of this video to download Moira's paper on perceived audience size and to see the final plot.
+
+Notes:
+
+***
+
+### Correlation
+Notes:
+
+```{r Correlation}
+
+```
+
+Look up the documentation for the cor.test function.
+
+What's the correlation between age and friend count? Round to three decimal places.
+Response:
+
+***
+
+### Correlation on Subsets
+Notes:
+
+```{r Correlation on Subsets}
+with(                 , cor.test(age, friend_count))
+```
+
+***
+
+### Correlation Methods
+Notes:
+
+***
+
+## Create Scatterplots
+Notes:
+
+```{r}
+
+```
+
+***
+
+### Strong Correlations
+Notes:
+
+```{r Strong Correlations}
+
+```
+
+What's the correlation betwen the two variables? Include the top 5% of values for the variable in the calculation and round to 3 decimal places.
+
+```{r Correlation Calcuation}
+
+```
+
+Response:
+
+***
+
+### Moira on Correlation
+Notes:
+
+***
+
+### More Caution with Correlation
+Notes:
+
+```{r More Caution With Correlation}
+install.packages('alr3')
+library(alr3)
+```
+
+Create your plot!
+
+```{r Temp vs Month}
+
+```
+
+***
+
+### Noisy Scatterplots
+a. Take a guess for the correlation coefficient for the scatterplot.
+
+b. What is the actual correlation of the two variables?
+(Round to the thousandths place)
+
+```{r Noisy Scatterplots}
+
+```
+
+***
+
+### Making Sense of Data
+Notes:
+
+```{r Making Sense of Data}
+
+```
+
+***
+
+### A New Perspective
+
+What do you notice?
+Response:
+
+Watch the solution video and check out the Instructor Notes!
+Notes:
+
+***
+
+### Understanding Noise: Age to Age Months
+Notes:
+
+```{r Understanding Noise: Age to Age Months}
+
+```
+
+***
+
+### Age with Months Means
+
+```{r Age with Months Means}
+
+```
+
+Programming Assignment
+```{r Programming Assignment}
+
+```
+
+***
+
+### Noise in Conditional Means
+
+```{r Noise in Conditional Means}
+
+```
+
+***
+
+### Smoothing Conditional Means
+Notes:
+
+```{r Smoothing Conditional Means}
+
+```
+
+***
+
+### Which Plot to Choose?
+Notes:
+
+***
+
+### Analyzing Two Variables
+Reflection:
+
+***
+
+Click **KnitHTML** to see all of your hard work and to have an html
+page of this lesson, your answers, and your notes!
+
