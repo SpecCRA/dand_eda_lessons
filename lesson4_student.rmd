@@ -3,7 +3,8 @@ Lesson 4
 ```{r Things to run at the start of every session}
 library(dplyr)
 library(ggplot2)
-
+install.packages('alr3')
+library(alr3)
 ```
 
 ***
@@ -169,7 +170,7 @@ Notes:
 Notes:
 
 ```{r Correlation}
-
+cor(pf$age, pf$friend_count) 
 ```
 
 Look up the documentation for the cor.test function.
@@ -183,7 +184,7 @@ Response:
 Notes:
 
 ```{r Correlation on Subsets}
-with(                 , cor.test(age, friend_count))
+with(subset(pf, age <= 70), cor.test(age, friend_count))
 ```
 
 ***
@@ -197,22 +198,28 @@ Notes:
 Notes:
 
 ```{r}
-
+ggplot(aes(pf$www_likes_received, pf$likes_received), data = pf) +
+  geom_point(alpha = 1/25) +
+  coord_cartesian(xlim = c(0,5500), ylim = c(0, 25000))
 ```
 
 ***
 
 ### Strong Correlations
 Notes:
-
+We can see 95th percentile with quantile command to narrow and see the bulk of our relevant data
 ```{r Strong Correlations}
-
+ggplot(aes(pf$www_likes_received, pf$likes_received), data = pf) +
+  geom_point()+
+  xlim(0, quantile(pf$www_likes_received, 0.95))+
+  ylim(0, quantile(pf$likes_received, 0.95)) + 
+  geom_smooth(method = 'lm', color = "red")
 ```
 
 What's the correlation betwen the two variables? Include the top 5% of values for the variable in the calculation and round to 3 decimal places.
 
 ```{r Correlation Calcuation}
-
+with(pf, cor.test(pf$www_likes_received, pf$likes_received))
 ```
 
 Response:
@@ -221,33 +228,48 @@ Response:
 
 ### Moira on Correlation
 Notes:
+You want variables indepedent of one another, not variables that measure the same kind of things. 
 
+Measuring correlation may help you decide what variables you want to compare and keep.
 ***
 
 ### More Caution with Correlation
 Notes:
+
 
 ```{r More Caution With Correlation}
 install.packages('alr3')
 library(alr3)
 ```
 
+
+```{r}
+data(Mitchell)
+
+ggplot(aes(Mitchell$Temp, Mitchell$Month), data=Mitchell) + 
+  geom_point()
+
+```
+
 Create your plot!
 
 ```{r Temp vs Month}
 
+ggplot(aes(Mitchell$Temp, Mitchell$Month), data=Mitchell) + 
+  geom_point()
 ```
 
 ***
 
 ### Noisy Scatterplots
 a. Take a guess for the correlation coefficient for the scatterplot.
-
+Pretty terrible, probably close to 0
 b. What is the actual correlation of the two variables?
 (Round to the thousandths place)
+0.0575
 
 ```{r Noisy Scatterplots}
-
+with(Mitchell, cor.test(Mitchell$Month, Mitchell$Temp))
 ```
 
 ***
@@ -256,7 +278,9 @@ b. What is the actual correlation of the two variables?
 Notes:
 
 ```{r Making Sense of Data}
-
+ggplot(aes(Mitchell$Month, Mitchell$Temp), data=Mitchell) + 
+  geom_point()+
+  scale_x_discrete(breaks = seq(0, 203, 12))
 ```
 
 ***
