@@ -1,0 +1,23 @@
+---
+title: "PSet_explore_one_varible"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(dplyr)
+```
+
+```{r Load diamonds and summarize}
+data(diamonds)
+summary(diamonds)
+summary(diamonds$price)
+```
+
+```{r}
+cheap_diamonds <- subset(diamonds, price <= 500)
+cheaper_diamonds <- subset(diamonds, price <= 250)
+expensive_diamonds <- subset(diamonds, price >= 15000)
+```
+
+
