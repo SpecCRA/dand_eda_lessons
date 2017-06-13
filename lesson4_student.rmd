@@ -3,8 +3,10 @@ Lesson 4
 ```{r Things to run at the start of every session}
 library(dplyr)
 library(ggplot2)
-install.packages('alr3')
+#install.packages('alr3')
 library(alr3)
+setwd("~/r_files/")
+pf <- read.csv("pseudo_facebook.tsv", sep = "\t")
 ```
 
 ***
@@ -115,7 +117,7 @@ pf.fc_by_age <- summarise(age_groups,
 
 pf.fc_by_age <- arrange(pf.fc_by_age, age)
 
-head(pf.fc_by_age)
+#head(pf.fc_by_age)
 ```
 
 ```{r Alternative way to write above code}
@@ -299,7 +301,8 @@ Notes:
 Notes:
 
 ```{r Understanding Noise: Age to Age Months}
-
+ggplot(aes(age, friend_count_mean), data=pf.fc_by_age) + 
+  geom_line()
 ```
 
 ***
@@ -307,21 +310,50 @@ Notes:
 ### Age with Months Means
 
 ```{r Age with Months Means}
-
+pf$age_with_months <- pf$age + (1 - pf$dob_month/12)
 ```
 
 Programming Assignment
 ```{r Programming Assignment}
 
+
+pf.fc_by_age_months <- pf %>%
+  group_by(age_with_months) %>%
+  summarise(friend_count_means <- mean(friend_count),
+            friend_count_medians <- median(friend_count),
+            n = n()) %>%
+  arrange(age_with_months)
+
+head(pf.fc_by_age_months)
 ```
+
+```{r}
+new_age_groups <- group_by(pf, age_with_months)
+pf.fc_by_age_months <- summarise(new_age_groups,
+                                 friend_count_mean = mean(friend_count),
+                                 firend_count_median = median(friend_count),
+                                 n=n())
+
+pf.fc_by_age_months <- arrange(pf.fc_by_age_months, age_with_months)
+
+head(pf.fc_by_age_months)
+```
+
 
 ***
 
 ### Noise in Conditional Means
 
 ```{r Noise in Conditional Means}
-
+ggplot(aes(age_with_months, friend_count_means),
+       data = subset(pf.fc_by_age_months, age_with_months < 71)) + 
+  geom_line()
 ```
+```{r}
+ggplot(aes(age_with_months, friend_count_mean), data = subset(pf.fc_by_age_months, age_with_months < 71)) + 
+  geom_line()
+```
+
 
 ***
 
