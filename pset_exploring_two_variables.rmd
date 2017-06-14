@@ -1,0 +1,56 @@
+```{r}
+library(ggplot2)
+library(dplyr)
+data(diamonds)
+```
+
+```{r}
+ggplot(aes(price, x), data = diamonds) + 
+  geom_point()
+```
+
+```{r}
+cor.test(diamonds$price, diamonds$x)
+cor.test(diamonds$price, diamonds$y)
+cor.test(diamonds$price, diamonds$z)
+```
+
+```{r}
+ggplot(aes(depth, price), data = diamonds) + 
+  geom_point(alpha = 1/100) + 
+  scale_x_continuous(breaks = seq(0, 79, 2))
+```
+
+```{r}
+cor.test(diamonds$depth, diamonds$price)
+```
+
+```{r}
+ggplot(aes(carat, price), 
+       data = subset(diamonds, diamonds$price < quantile(diamonds$price, probs = 0.99) &
+                       diamonds$carat < quantile(diamonds$carat, probs = 0.99))) + 
+  geom_point()
+```
+
+```{r}
+ggplot(aes(x = carat, y = price), 
+       data = subset(diamonds, diamonds$price < quantile(diamonds$price, 0.99) &
+                       diamonds$carat < quantile(diamonds$carat, 0.99))) + 
+  geom_point()
+```
+
+```{r}
+ggplot(aes((x*y*z), price), data = diamonds) + 
+  geom_point()
+```
+
+```{r}
+diamonds$volume <- diamonds$x * diamonds$y * diamonds$z
+count(diamonds$volume)
+```
+
+```{r}
+cor.test(subset(diamonds$price, !diamonds$volume== 0 & !diamonds$volume >= 800), subset(diamonds$volume, !diamonds$volume== 0 & !diamonds$volume >= 800))
+```
+
+
