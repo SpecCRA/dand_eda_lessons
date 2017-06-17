@@ -6,6 +6,7 @@ library(gridExtra)
 library(dplyr)
 library(reshape2)
 pf = read.csv("pseudo_facebook.tsv", sep = "\t")
+yo <- read.csv("yogurt.csv")
 ```
 
 
@@ -248,8 +249,18 @@ Notes:
 Notes:
 
 ```{r Histograms Revisited}
-
+yo <- read.csv("yogurt.csv")
 ```
+```{r}
+summary(yo)
+names(yo)
+yo$id <- factor(yo$id)
+```
+```{r}
+ggplot(aes(price), data = yo) + 
+  geom_histogram()
+```
+
 
 ***
 
@@ -257,7 +268,8 @@ Notes:
 Notes:
 
 ```{r Number of Purchases}
-
+yo <- transform(yo, all.purchases = strawberry + blueberry + pina.colada +
+                             plain + mixed.berry)
 ```
 
 ***
@@ -266,7 +278,8 @@ Notes:
 Notes:
 
 ```{r Prices over Time}
-
+ggplot(aes(time, price), data = yo) + 
+  geom_jitter(alpha = 1/5, shape = 20)
 ```
 
 ***
@@ -279,7 +292,24 @@ Notes:
 ### Looking at Samples of Households
 
 ```{r Looking at Sample of Households}
+# set the seed for reproducible results
 
+set.seed(4320)
+sample.ids <- sample(levels(yo$id), 16)
+
+ggplot(aes(time, price),
+       data = subset(yo, id %in% sample.ids)) + 
+  facet_wrap( ~ id) +
+  geom_line() + 
+  geom_point(aes(size = all.purchases), pch = 1)
+```
+```{r}
+set.seed(6000)
+ggplot(aes(time, all.purchases),
+       data = subset(yo, id %in% sample.ids)) +
+  facet_wrap(~id) + 
+  geom_line() + 
+  geom_point(aes(size = price), pch = 10)
 ```
 
 ***
@@ -296,6 +326,12 @@ Notes:
 
 ### Scatterplot Matrix
 Notes:
+```{r}
+install.packages("GGally")
+```
+```{r}
+library(GGally)
+```
 
 ***
 
