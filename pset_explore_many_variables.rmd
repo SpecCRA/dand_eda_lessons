@@ -4,6 +4,7 @@ library(dplyr)
 library(reshape2)
 library(GGally)
 data(diamonds)
+pf <- read.csv("pseudo_facebook.tsv", sep = "\t")
 ```
 
 ```{r}
@@ -29,5 +30,52 @@ ggplot(aes(volume, price),
   geom_point(aes(color = clarity)) + 
   scale_y_continuous(trans = "log10") + 
   scale_color_brewer(type = 'div')
+```
+
+```{r}
+pf$prop_initiated <- with(pf, 
+                       as.numeric(friendships_initiated / friend_count))
+```
+```{r}
+pf$year_joined <- floor(2014 - pf$tenure/365)
+```
+
+```{r}
+pf$year_joined.bucket <- cut(pf$year_joined, 
+                          c(2004, 2009, 2011, 2012, 2014))
+```
+
+```{r}
+ggplot(aes(tenure, prop_initiated), 
+       data = subset(pf, !is.na(prop_initiated))) +
+  geom_line(aes(color = year_joined.bucket), stat = "summary", fun.y = median)
+```
+
+```{r}
+pf$tenure_bins <- cut(pf$tenure,
+                      c(0, 225, 425, 675, 3200))
+```
+
+```{r}
+ggplot(aes(50*round(tenure/50), prop_initiated), 
+       data = subset(pf, !is.na(prop_initiated) & !is.na(year_joined.bucket))) +
+  geom_line(aes(color = year_joined.bucket), stat = "summary", fun.y = median) + 
+  geom_smooth()
+```
+
+```{r}
+ggplot(aes(tenure_bins, friend_count), data = subset(pf, !is.na(tenure_bins))) + 
+  geom_line()
+```
+
+```{r}
+by(pf$prop_initiated, pf$year_joined.bucket, summary)
+```
+
+```{r}
+ggplot(aes(cut, price/carat), data = diamonds) + 
+  geom_jitter(aes(color = color)) + 
+  facet_wrap(~clarity) + 
+  scale_color_brewer(type = "div")
 ```
 
