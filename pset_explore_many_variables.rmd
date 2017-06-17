@@ -1,0 +1,33 @@
+```{r Things to run first}
+library(ggplot2)
+library(dplyr)
+library(reshape2)
+library(GGally)
+data(diamonds)
+```
+
+```{r}
+ggplot(aes(log(price)), data = diamonds) + 
+  geom_histogram(aes(fill = cut)) +
+  facet_wrap(~color) +
+  scale_fill_brewer(type = 'qual')
+```
+
+```{r}
+ggplot(aes(table, price), data = diamonds) + 
+  geom_point(aes(color = cut)) +
+  scale_fill_brewer(type = 'qual')
+```
+
+```{r}
+diamonds$volume <- with(diamonds, (x*y*z))
+```
+
+```{r}
+ggplot(aes(volume, price), 
+       data = subset(diamonds, diamonds$volume < quantile(diamonds$volume, probs = 0.99))) + 
+  geom_point(aes(color = clarity)) + 
+  scale_y_continuous(trans = "log10") + 
+  scale_color_brewer(type = 'div')
+```
+
