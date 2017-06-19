@@ -1,5 +1,11 @@
 Lesson 6
 ========================================================
+```{r}
+library(ggplot2)
+library(dplyr)
+library(gridExtra)
+data(diamonds)
+```
 
 ### Welcome
 Notes:
@@ -9,7 +15,10 @@ Notes:
 ### Scatterplot Review
 
 ```{r Scatterplot Review}
-
+ggplot(aes(carat, price), data = diamonds) + 
+  geom_point(fill = I("#F79420"), alpha = 1/4) +
+  scale_x_continuous(lim = c(0, quantile(diamonds$carat, 0.99))) + 
+  scale_y_continuous(lim = c(0, quantile(diamonds$price, 0.99)))
 ```
 
 ***
